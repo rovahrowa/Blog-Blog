@@ -13,7 +13,7 @@ const MongoStore = connectMongo(session)
 const app = express()
 const dbURL = "mongodb://"+configs.dbHost+":"+configs.dbPort+"/"+configs.testDB
 
-
+app.locals.pretty = true;
 app.set('views', __dirname + '/app/server/views');
 app.set('view engine', 'jade');
 app.use(cookieParser());
