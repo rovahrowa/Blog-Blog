@@ -15,5 +15,13 @@
   "bugs": {
     "url": "https://github.com/rovahrowa/Node-Mongo-Login-Template/issues"
   },
-  "homepage": "https://github.com/rovahrowa/Node-Mongo-Login-Template#readme"
+  "homepage": "https://github.com/rovahrowa/Node-Mongo-Login-Template#readme",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1"
+  }
 }
