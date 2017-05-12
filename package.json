@@ -1,0 +1,19 @@
+{
+  "name": "node-mongo-login-template",
+  "version": "1.0.0",
+  "description": "A Login-Registration Template for starting a Nodejs application that requires user account creations. Using mongo database and Jade views with express server",
+  "main": "app.js",
+  "scripts": {
+    "test": "babel src --out-dir dist && nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rovahrowa/Node-Mongo-Login-Template.git"
+  },
+  "author": "Danstan Otieno Onyango",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rovahrowa/Node-Mongo-Login-Template/issues"
+  },
+  "homepage": "https://github.com/rovahrowa/Node-Mongo-Login-Template#readme"
+}
