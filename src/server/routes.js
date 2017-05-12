@@ -121,7 +121,7 @@ module.exports = (app) =>{
                     if (!e){
                         res.status(200).send('ok');
                     }	else{
-                        for (k in e) console.log('ERROR : ', k, e[k]);
+                        for (m in e) console.log('ERROR : ', m, e[m]);
                         res.status(400).send('unable to dispatch password reset');
                     }
                 });
