@@ -26,7 +26,7 @@ EM.dispatchResetPasswordLink = (account, callback)=>
 
 EM.composeEmail = (o)=>
 {
-    let link = 'https://nodejs-login.herokuapp.com/reset-password?e='+o.email+'&p='+o.pass;
+    let link = 'http://localhost:8090/reset-password?e='+o.email+'&p='+o.pass;
     let html = "<html><body>";
     html += "Hi "+o.name+",<br><br>";
     html += "Your username is <b>"+o.user+"</b><br><br>";
