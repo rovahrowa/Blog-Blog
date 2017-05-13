@@ -8,7 +8,9 @@ import connectMongo from 'connect-mongo'
 import session from 'express-session'
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
+import routers from './server/routes'
 
+console.time(">>>Application Start time: ");
 const MongoStore = connectMongo(session)
 const app = express()
 const dbURL = "mongodb://"+configs.dbHost+":"+configs.dbPort+"/"+configs.testDB
@@ -31,10 +33,10 @@ app.use(session({
     })
 )
 
-//import './server/routes'
-require('./server/routes')(app);
+routers(app)
 
 app.listen(configs.testPort)
 
 console.log(">Server started running at http://localhost:"+configs.testPort)
 console.log(">Connected to Database at "+dbURL)
+console.timeEnd(">>>Application Start time: ");

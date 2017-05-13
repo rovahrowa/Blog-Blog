@@ -5,7 +5,7 @@ import CT from './modules/country-list'
 import AM from './modules/account-manager'
 import EM from './modules/email-dispatcher'
 
-module.exports = (app) =>{
+let routers = (app) =>{
 
 // main login page //
     app.get('/', (req, res)=>{
@@ -99,7 +99,7 @@ module.exports = (app) =>{
             lastName 	: req.body['lastName'],
             email 	: req.body['email'],
             user 	: req.body['user'],
-            pass	: req.body['pass'],
+            pass	: req.body['password'],
             country : req.body['country']
         }, (e)=>{
             if (e){
@@ -190,3 +190,5 @@ module.exports = (app) =>{
     app.get('*', (req, res) =>{ res.render('404', { title: 'Page Not Found'}); });
 
 };
+
+module.exports=routers
