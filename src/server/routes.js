@@ -16,26 +16,26 @@ let routers = (app) =>{
             // attempt automatic login //
             AM.autoLogin(req.cookies.user, req.cookies.pass, (o)=>{
                 if (o != null){
-                    req.session.user = o;
-                    res.redirect('/home');
+                    req.session.user = o
+                    res.redirect('/home')
                 }	else{
                     res.render('login', { title: 'Hello - Please Login To Your Account' });
                 }
-            });
+            })
         }
-    });
+    })
 
     app.post('/', (req, res)=>{
         AM.manualLogin(req.body['user'], req.body['pass'], (e, o)=>{
             if (!o){
-                res.status(400).send(e);
+                res.status(400).send(e)
             }	else{
-                req.session.user = o;
+                req.session.user = o
                 if (req.body['remember-me'] == 'true'){
                     res.cookie('user', o.user, { maxAge: 900000 });
                     res.cookie('pass', o.pass, { maxAge: 900000 });
                 }
-                res.status(200).send(o);
+                res.status(200).send(o)
             }
         });
     });
@@ -61,7 +61,8 @@ let routers = (app) =>{
         }	else{
             AM.updateAccount({
                 id		: req.session.user._id,
-                name	: req.body['name'],
+                firstName	: req.body['firstName'],
+                lastName	: req.body['lastName'],
                 email	: req.body['email'],
                 pass	: req.body['pass'],
                 country	: req.body['country']
