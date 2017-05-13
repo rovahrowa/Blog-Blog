@@ -4,7 +4,7 @@
   "description": "A Login-Registration Template for starting a Nodejs application that requires user account creations. Using mongo database and Jade views with express server",
   "main": "app.js",
   "scripts": {
-    "dev": "babel src --out-dir dist --copy-files && node dist/app.js",
+    "dev": "echo 'Babel translating ES6 TO ES5' && babel src --out-dir dist --copy-files && node dist/app.js",
     "test": "babel src --out-dir dist && nodemon dist/app.js"
   },
   "repository": {
