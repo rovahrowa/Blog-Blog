@@ -40,6 +40,7 @@ db.open((e, d)=>{
 })
 
 var accounts = db.collection('accounts')
+var users=db.collection('users')
 
 /* login validation methods */
 
@@ -86,8 +87,14 @@ exports.addNewAccount = (newData, callback) =>
 					saltAndHash(newData.pass, (hash) =>{
 						newData.pass = hash;
 					// append date stamp when record was created //
-						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
-						accounts.insert(newData, {safe: true}, callback);
+						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a')
+						accounts.insert(newData, {safe: true})
+						let newUser={
+							user:newData.user,
+							name:newData.firstName + " " + newData.lastName,
+							id:accounts.find({email:newData.user}).toArray()._id
+						}
+						users.insert(newUser, {safe:true}, callback)
 					});
 				}
 			});
