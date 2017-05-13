@@ -7,7 +7,7 @@ module.exports = EM;
 
 EM.server = require("emailjs/email").server.connect(
     {
-        host 	    : process.env.EMAIL_HOST || 'smtp.gmail.com',
+        host 	    : process.env.EMAIL_HOST || 'imap.gmail.com',
         user 	    : process.env.EMAIL_USER || 'danstan.codetest@gmail.com',
         password    : process.env.EMAIL_PASS || 'wX555X555-omera',
         ssl		    : true
@@ -28,7 +28,7 @@ EM.composeEmail = (o)=>
 {
     let link = 'http://localhost:8090/reset-password?e='+o.email+'&p='+o.pass;
     let html = "<html><body>";
-    html += "Hi "+o.name+",<br><br>";
+    html += "Hi "+o.firstName+" "+o.lastName+",<br><br>";
     html += "Your username is <b>"+o.user+"</b><br><br>";
     html += "<a href='"+link+"'>Click here to reset your password</a><br><br>";
     html += "Cheers,<br>";
