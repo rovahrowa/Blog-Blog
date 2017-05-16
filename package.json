@@ -1,7 +1,7 @@
 {
-  "name": "node-mongo-login-template",
+  "name": "blog-blog",
   "version": "1.0.0",
-  "description": "A Login-Registration Template for starting a Nodejs application that requires user account creations. Using mongo database and Jade views with express server",
+  "description": "Simple Blogsite with admin and user logins",
   "main": "app.js",
   "scripts": {
     "dev": "echo 'Babel translating ES6 TO ES5' && babel src --out-dir dist --copy-files && node dist/app.js",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rovahrowa/Node-Mongo-Login-Template.git"
+    "url": "git+https://github.com/rovahrowa/Todo-Todo.git"
   },
   "author": "Danstan Otieno Onyango",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rovahrowa/Node-Mongo-Login-Template/issues"
+    "url": "https://github.com/rovahrowa/Todo-Todo.git/issues"
   },
-  "homepage": "https://github.com/rovahrowa/Node-Mongo-Login-Template#readme",
+  "homepage": "https://github.com/rovahrowa/Todo-Todo.git#readme",
   "dependencies": {
     "body-parser": "^1.17.1",
     "connect-mongo": "^1.3.2",
