@@ -3,44 +3,10 @@
  */
 
 import crypto from 'crypto'
-import server from 'mongodb'
 import moment from 'moment'
-import mongodb from 'mongodb'
+import collections from '../common'
 
 
-const MongoDB=mongodb.Db
-const Server=server.Server
-/*
-	ESTABLISH DATABASE CONNECTION
-*/
-
-
-var dbName = process.env.DB_NAME || 'Node-Login-Template';
-var dbHost = process.env.DB_HOST || 'localhost'
-var dbPort = process.env.DB_PORT || 27017
-
-var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1})
-db.open((e, d)=>{
-	if (e) {
-		console.log(e)
-	} else {
-		if (process.env.NODE_ENV == 'live') {
-			db.authenticate(process.env.DB_USER, process.env.DB_PASS, (e, res)=> {
-				if (e) {
-					console.log('mongo :: error: not authenticated-User Details Error', e)
-				}
-				else {
-					console.log('mongo :: authenticated and connected to database :: "'+dbName+'"')
-				}
-			})
-		}	else{
-			console.log('>>>MongoDB Connection Success: connected to database: "'+dbName+'"')
-		}
-	}
-})
-
-var accounts = db.collection('accounts')
-var users=db.collection('users')
 
 /* login validation methods */
 
@@ -57,7 +23,7 @@ exports.autoLogin = (user, pass, callback)=>
 
 exports.manualLogin = (user, pass, callback)=>
 {
-	accounts.findOne({user:user}, (e, o)=> {
+    collections.accounts.findOne({user:user}, (e, o)=> {
 		if (o == null){
 			callback('user-not-found')
 		}	else{
@@ -76,11 +42,11 @@ exports.manualLogin = (user, pass, callback)=>
 
 exports.addNewAccount = (newData, callback) =>
 {
-	accounts.findOne({user:newData.user}, (e, o)=> {
+    collections.accounts.findOne({user:newData.user}, (e, o)=> {
 		if (o){
 			callback('username-taken');
 		}	else{
-			accounts.findOne({email:newData.email}, (e, o)=> {
+            collections.accounts.findOne({email:newData.email}, (e, o)=> {
 				if (o){
 					callback('email-taken');
 				}	else{
@@ -88,13 +54,35 @@ exports.addNewAccount = (newData, callback) =>
 						newData.pass = hash;
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a')
-						accounts.insert(newData, {safe: true})
-						let newUser={
-							user:newData.user,
-							name:newData.firstName + " " + newData.lastName,
-							id:accounts.find({email:newData.user}).toArray()._id
-						}
-						users.insert(newUser, {safe:true}, callback)
+                        //create account in db----Insert o returns an object that is inserted
+                        collections.accounts.insert(newData, {safe: true}, function(e,o){
+                            if (!e){
+                                console.log("#-----------###################-------------#")
+                                console.log("#-----------New Account Created-------------#")
+                                console.log("#-----------###################-------------#")
+                                console.log("Account Created as:::")
+                                console.log(o)
+                                console.log("#-----------###################-------------#")
+                                let newUser={
+                                    accountId:o.insertedIds[0],
+                                    user:newData.user,
+                                    firstName:newData.firstName,
+                                    lastName:newData.lastName,
+                                    dateCreated:o.ops[0].date,
+                                    initialAccount:o.ops[0]
+                                }
+                                collections.users.insert(newUser, {safe:true},callback)
+                                console.log("#-----------###################-------------#")
+                                console.log("#-----------New User Created-------------#")
+                                console.log("#-----------###################-------------#")
+                                console.log("Account Created as:::")
+                                console.log(newUser)
+                                console.log("#-----------###################-------------#")
+
+                            }
+                            else throw errors
+                        })
+
 					});
 				}
 			});
@@ -104,20 +92,20 @@ exports.addNewAccount = (newData, callback) =>
 
 exports.updateAccount = function(newData, callback)
 {
-	accounts.findOne({_id:getObjectId(newData.id)}, function(e, o){
-		o.name 		= newData.firstName;
-        o.name 		= newData.lastName;
+    collections.accounts.findOne({_id:getObjectId(newData.id)}, function(e, o){
+		o.firstName 		= newData.firstName;
+        o.lastName 		= newData.lastName;
 		o.email 	= newData.email;
 		o.country 	= newData.country;
 		if (newData.pass == ''){
-			accounts.save(o, {safe: true}, function(e) {
+            collections.accounts.save(o, {safe: true}, function(e) {
 				if (e) callback(e);
 				else callback(null, o);
 			});
 		}	else{
 			saltAndHash(newData.pass, function(hash){
 				o.pass = hash;
-				accounts.save(o, {safe: true}, function(e) {
+                collections.accounts.save(o, {safe: true}, function(e) {
 					if (e) callback(e);
 					else callback(null, o);
 				});
@@ -128,13 +116,13 @@ exports.updateAccount = function(newData, callback)
 
 exports.updatePassword = function(email, newPass, callback)
 {
-	accounts.findOne({email:email}, function(e, o){
+    collections.accounts.findOne({email:email}, function(e, o){
 		if (e){
 			callback(e, null);
 		}	else{
 			saltAndHash(newPass, function(hash){
 		        o.pass = hash;
-		        accounts.save(o, {safe: true}, callback);
+                collections.accounts.save(o, {safe: true}, callback);
 			});
 		}
 	});
@@ -144,24 +132,24 @@ exports.updatePassword = function(email, newPass, callback)
 
 exports.deleteAccount = function(id, callback)
 {
-	accounts.remove({_id: getObjectId(id)}, callback);
+    collections.accounts.remove({_id: getObjectId(id)}, callback);
 }
 
 exports.getAccountByEmail = function(email, callback)
 {
-	accounts.findOne({email:email}, function(e, o){ callback(o); });
+    collections.accounts.findOne({email:email}, function(e, o){ callback(o); });
 }
 
 exports.validateResetLink = function(email, passHash, callback)
 {
-	accounts.find({ $and: [{email:email, pass:passHash}] }, function(e, o){
+    collections.accounts.find({ $and: [{email:email, pass:passHash}] }, function(e, o){
 		callback(o ? 'ok' : null);
 	});
 }
 
 exports.getAllRecords = function(callback)
 {
-	accounts.find().toArray(
+    collections.accounts.find().toArray(
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
@@ -170,7 +158,7 @@ exports.getAllRecords = function(callback)
 
 exports.delAllRecords = function(callback)
 {
-	accounts.remove({}, callback); // reset accounts collection for testing //
+    collections.accounts.remove({}, callback); // reset accounts collection for testing //
 }
 
 /* private encryption & validation methods */
@@ -210,7 +198,7 @@ var getObjectId = function(id)
 
 var findById = function(id, callback)
 {
-	accounts.findOne({_id: getObjectId(id)},
+    collections.accounts.findOne({_id: getObjectId(id)},
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
@@ -220,7 +208,7 @@ var findById = function(id, callback)
 var findByMultipleFields = function(a, callback)
 {
 // this takes an array of name/val pairs to search against {fieldName : 'value'} //
-	accounts.find( { $or : a } ).toArray(
+    collections.accounts.find( { $or : a } ).toArray(
 		function(e, results) {
 		if (e) callback(e)
 		else callback(null, results)
